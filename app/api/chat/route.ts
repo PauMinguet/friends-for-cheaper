@@ -1,5 +1,4 @@
 import { Groq } from 'groq-sdk';
-import { StreamingTextResponse } from 'ai';
 
 const client = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -34,18 +33,22 @@ export async function POST(req: Request) {
     stream: true,
   });
 
-  // Create a TransformStream to handle the response
   const stream = new ReadableStream({
     async start(controller) {
       for await (const chunk of completion) {
         const content = chunk.choices[0]?.delta?.content;
         if (content) {
-          controller.enqueue(content);
+          controller.enqueue(new TextEncoder().encode(content));
         }
       }
       controller.close();
     },
   });
 
-  return new StreamingTextResponse(stream);
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Transfer-Encoding': 'chunked',
+    },
+  });
 }

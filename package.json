@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "ai": "^4.0.36",
+    "ai-stream": "^0.0.4",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.1.0",
+    "groq-sdk": "^0.12.0",
     "lucide-react": "^0.471.1",
     "next": "^14.1.0",
     "next-themes": "^0.2.1",
