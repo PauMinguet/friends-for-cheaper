@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import { Beer, ShoppingCart, X, Trash2, Wrench, Car, Bike, Code, Cog, Guitar, Music, MessageSquare, Send, Clock, Shield } from 'lucide-react'
+import { Beer, ShoppingCart, X, Trash2, Wrench, Car, Bike, Code, Cog, Guitar, Music, MessageSquare, Send, Clock, Shield, User, UserCircle2 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 
 type Service = {
@@ -15,7 +15,7 @@ type Service = {
 type Review = {
   id: number;
   name: string;
-  image: string;
+  image: 'male' | 'female';
   comment: string;
   rating: number;
   service: string;
@@ -92,7 +92,7 @@ export default function Home() {
     {
       id: 1,
       name: "Sarah Chen",
-      image: "/sarah.jpg",
+      image: "female",
       comment: "Traded 2 beers for guitar lessons. Now I can play 'Wonderwall' in 3 different keys! My roommates are thrilled (they're not).",
       rating: 5,
       service: "Guitar Lessons"
@@ -100,7 +100,7 @@ export default function Home() {
     {
       id: 2,
       name: "Marcus Rodriguez",
-      image: "/marcus.jpg",
+      image: "male",
       comment: "Got my bike fixed for 6 beers. Best deal ever! Though I'm pretty sure my bike now makes motorcycle sounds... 🏍️",
       rating: 5,
       service: "Bike Tire Fix"
@@ -108,7 +108,7 @@ export default function Home() {
     {
       id: 3,
       name: "Aisha Patel",
-      image: "/aisha.jpg",
+      image: "female",
       comment: "Learned to code for just 1 beer! Still debugging my first 'Hello World', but hey, at least I'm debugging with style! 😎",
       rating: 5,
       service: "Pau Code Lessons"
@@ -116,7 +116,7 @@ export default function Home() {
     {
       id: 4,
       name: "Jake Thompson",
-      image: "/jake.jpg",
+      image: "male",
       comment: "Oil change for 8 beers? My car now purrs like a kitten... that's been drinking beer. 10/10 would recommend! 🚗",
       rating: 5,
       service: "Oil Change"
@@ -124,7 +124,7 @@ export default function Home() {
     {
       id: 5,
       name: "Luna Kim",
-      image: "/luna.jpg",
+      image: "female",
       comment: "Got my wheel rotation done. Now my car does perfect donuts in the parking lot. Not sure if that's related, but I'm not complaining! 🌪️",
       rating: 5,
       service: "Wheel Rotation"
@@ -132,7 +132,7 @@ export default function Home() {
     {
       id: 6,
       name: "Dave Mitchell",
-      image: "/dave.jpg",
+      image: "male",
       comment: "My dirt bike's running so smooth after maintenance, it's practically a clean bike now. Identity crisis incoming! 🏁",
       rating: 5,
       service: "Dirt Bike Maintenance"
@@ -675,12 +675,9 @@ export default function Home() {
               className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 relative rounded-full overflow-hidden mr-4">
-                  <Image
-                    src={review.image}
-                    alt={review.name}
-                    fill
-                    className="object-cover"
+                <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full mr-4">
+                  <UserCircle2 
+                    className={`w-8 h-8 ${review.image === 'female' ? 'text-pink-400' : 'text-blue-400'}`}
                   />
                 </div>
                 <div>
