@@ -42,6 +42,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [discount, setDiscount] = useState(0);
+  const [formStatus, setFormStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+  const formRef = useRef<HTMLFormElement>(null);
 
   const services: Service[] = [
     { 
@@ -423,7 +428,46 @@ export default function Home() {
               Don't see what you need? Tell us about your project and we'll let you know how many beers it'll cost! 🍺
             </p>
             
-            <form className="space-y-6">
+            <form 
+              ref={formRef}
+              className="space-y-6" 
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target as HTMLFormElement);
+                const data = {
+                  name: formData.get('name'),
+                  email: formData.get('email'),
+                  serviceType: formData.get('service-type'),
+                  description: formData.get('description'),
+                  preferredTime: formData.get('preferred-time'),
+                };
+
+                try {
+                  setFormStatus({ type: null, message: '' });
+                  const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                  });
+
+                  const result = await response.json();
+
+                  if (result.success) {
+                    setFormStatus({
+                      type: 'success',
+                      message: 'Thanks! We\'ll get back to you with a beer quote soon! 🍺'
+                    });
+                    formRef.current?.reset();
+                  } else {
+                    throw new Error(result.error);
+                  }
+                } catch (error) {
+                  setFormStatus({
+                    type: 'error',
+                    message: error instanceof Error ? error.message : 'Something went wrong. Please try again.'
+                  });
+                }
+              }}>
               <div className="space-y-2">
                 <label htmlFor="name" className="block text-blue-600 font-semibold">
                   Your Name
@@ -431,6 +475,8 @@ export default function Home() {
                 <input
                   type="text"
                   id="name"
+                  name="name"
+                  required
                   className="w-full p-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   placeholder="John Doe"
                 />
@@ -443,6 +489,8 @@ export default function Home() {
                 <input
                   type="email"
                   id="email"
+                  name="email"
+                  required
                   className="w-full p-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   placeholder="john@example.com"
                 />
@@ -454,6 +502,8 @@ export default function Home() {
                 </label>
                 <select
                   id="service-type"
+                  name="service-type"
+                  required
                   className="w-full p-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
                 >
                   <option value="">Select a service type</option>
@@ -470,6 +520,8 @@ export default function Home() {
                 </label>
                 <textarea
                   id="description"
+                  name="description"
+                  required
                   rows={5}
                   className="w-full p-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   placeholder="Describe what you need help with... The more details, the better we can estimate the beer cost! 🍺"
@@ -482,6 +534,8 @@ export default function Home() {
                 </label>
                 <select
                   id="preferred-time"
+                  name="preferred-time"
+                  required
                   className="w-full p-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
                 >
                   <option value="">Select preferred time frame</option>
@@ -492,6 +546,14 @@ export default function Home() {
                   <option value="flexible">Flexible</option>
                 </select>
               </div>
+
+              {formStatus.type && (
+                <div className={`p-4 rounded-lg ${
+                  formStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}>
+                  {formStatus.message}
+                </div>
+              )}
 
               <div className="pt-4">
                 <button

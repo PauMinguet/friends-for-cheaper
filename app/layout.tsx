@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your Site balls",
-  description: "Your site description",
+  title: "Friends for Cheaper",
+  description: "Trade services for beers with your friends",
   icons: {
     icon: [
       {
